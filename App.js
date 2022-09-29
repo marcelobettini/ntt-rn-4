@@ -1,18 +1,34 @@
 import { useGet } from './hooks/useGet';
+import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { ActivityIndicator, StyleSheet, Text, View, Image } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 export default function App() {
-  const [data, isLoading, error] = useGet(20)
+  const [randomChar, setRandomChar] = useState(randomizer(1, 826))
+  const [data, isLoading, error] = useGet(randomChar)
+  const handlePress = () => {
+    const num = randomizer(1, 826)
+    setRandomChar(prevValue => prevValue = num)
+  }
+  function randomizer(min, max) {
+    return Math.round(Math.random() * (max - min) * min)
+  }
+
   return (
     <View style={styles.container}>
       {isLoading && <ActivityIndicator size={"large"} color={'tomato'} />}
       {data && !isLoading && (
         <View style={[styles.width, styles.spacer]}>
 
-          <Text style={styles.name}>{data.name}</Text>
-          <Image style={styles.image} source={{ uri: data.image }}></Image>
+          <Text style={[styles.name, styles.width]}>{data.name}</Text>
+          <Image style={[styles.image, styles.rounded]} source={{ uri: data.image }}></Image>
+          <View style={styles.spacer}>
 
+            <TouchableOpacity
+              onPress={handlePress}>
+              <Text style={[styles.name, styles.rounded, styles.width, styles.blue, styles.button]}>RANDOMIZE</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )
 
